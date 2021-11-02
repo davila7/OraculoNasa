@@ -1,19 +1,19 @@
 // Llamada a las dependencias del proyecto
-const Web3 = require('web3')
-const Tx = require('ethereumjs-tx').Transaction
-const fetch = require('node-fetch')
+import Web3 from 'web3'
+import { Transaction as Tx } from 'ethereumjs-tx'
+import fetch from 'node-fetch'
 
 // Llamada a los archivos .json
-const contractJson = require('../build/contracts/Oracle.json')
+import contractJson from '../build/contracts/OraculoNasa.json'
 
 // Instancia de web3
-const web3 = new Web3('ws://127.0.0.1:7545')
+const web3 = new Web3('ws://127.0.0.1:8545')
 
 // Información de direcciones de Ganache
-const addressContract = '0x627dc8b5C8Be25CA28a9ccCc63B54ceAb83Ab439'
+const addressContract = '0x700eF0BD123Ef5103c00a8f67647aF151D05e898'
 const contractInstance = new web3.eth.Contract(contractJson.abi, addressContract)
-const privateKey = Buffer.from('1de22a209f21ba42d1bac8bc4e3a79663ceee1d5c5e1512ece80355b0ba320dc', 'hex')
-const address = '0xb29A882e52d3a32075A0d3Ed22293107F87471e2'
+const privateKey = Buffer.from('33f59112c03e39140c210c63e2ee2f75ec5aa7dc179ad9c8167cf1c5b9669397', 'hex')
+const address = '0xa87cC1089657EeE9CF3D96c0D29A039213A29374'
 
 // Obtener el número de bloque
 web3.eth.getBlockNumber()
@@ -21,7 +21,7 @@ web3.eth.getBlockNumber()
 
 // Función: listenEvent()
 function listenEvent(lastBlock) {
-    contractInstance.events.__calbackNewData({}, { fromBlock: lastBlock, toBlock: 'latest' }, (err, event) => {
+    contractInstance.events.__callbackNewData({}, { fromBlock: lastBlock, toBlock: 'latest' }, (err, event) => {
         event ? updateData() : null
         err ? console.log(err) : null
     })
@@ -29,10 +29,8 @@ function listenEvent(lastBlock) {
 
 // Función: updateData()
 function updateData() {
-    // start_date = 2015-09-07
-    // end_date = 2015-09-08
     // api_key = DEMO_KEY
-    const url = 'https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=DEMO_KEY' 
+    const url = 'https://api.nasa.gov/neo/rest/v1/feed?start_date=2021-10-01&end_date=2021-10-05&api_key=DEMO_KEY' 
 
     fetch(url)
     .then(response => response.json())
